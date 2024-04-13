@@ -26,6 +26,14 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    avatarPublicId: {
+      type: String,
+    },
+    dailyWaterNorm: {
+      type: Number,
+      default: 2.0,
+      min: [0, "Daily water norm cannot be negative"],
+    },
   },
   { versionKey: false, timestamps: true }
 );

@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
+import fs from "fs/promises";
 
 import HttpError from "../helpers/HttpError.js";
+import cloudinary from "../helpers/cloudinary.js";
 
 import * as authServices from "../services/authServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -73,9 +75,44 @@ const signout = async (req, res) => {
   });
 };
 
+export const updateAvatar = async (req, res) => {
+  if (!req.file) {
+    throw HttpError(400, "Please provide an image for the avatar.");
+  }
+
+  const { _id } = req.user;
+
+  const currentUser = await authServices.findUser({ _id });
+
+  if (currentUser.avatarPublicId) {
+    await cloudinary.uploader.destroy(currentUser.avatarPublicId);
+  }
+
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "avatars",
+  });
+
+  await fs.unlink(req.file.path);
+
+  const updatedUserAvatar = await authServices.updateUser(
+    { _id },
+    {
+      avatarURL: result.url,
+      avatarPublicId: result.public_id,
+    }
+  );
+
+  if (!updatedUserAvatar) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+
+  res.json({ avatarURL: result.url });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
