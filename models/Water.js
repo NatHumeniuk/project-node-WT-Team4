@@ -17,6 +17,12 @@ const waterTrackerSchema = new Schema(
       type: Number,
       required: true,
     },
+    dailyWaterNorm: {
+      type: Number,
+      default: 2000,
+      min: [0, "Daily water norm cannot be negative"],
+      max: [15000, "Daily water norm cannot exceed 15000ml"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
