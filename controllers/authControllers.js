@@ -62,7 +62,7 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { email } = req.user;
+  const { username, email, gender, avatarURL, dailyWaterNorm } = req.user;
 
   res.json({
     username,
