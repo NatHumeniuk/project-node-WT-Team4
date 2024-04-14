@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import fs from "fs/promises";
+import bcrypt from "bcrypt";
 
 import HttpError from "../helpers/HttpError.js";
 import cloudinary from "../helpers/cloudinary.js";
@@ -17,7 +18,8 @@ const signup = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  const newUser = await authServices.signup(req.body);
+  const username = email.split("@")[0];
+  const newUser = await authServices.signup({ ...req.body, username });
 
   res.status(201).json({
     email: newUser.email,
@@ -53,6 +55,7 @@ const signin = async (req, res) => {
   res.json({
     token,
     user: {
+      username: user.username,
       email: user.email,
     },
   });
@@ -62,7 +65,11 @@ const getCurrent = async (req, res) => {
   const { email } = req.user;
 
   res.json({
+    username,
     email,
+    gender,
+    avatarURL,
+    dailyWaterNorm,
   });
 };
 
@@ -75,38 +82,67 @@ const signout = async (req, res) => {
   });
 };
 
-export const updateAvatar = async (req, res) => {
-  if (!req.file) {
-    throw HttpError(400, "Please provide an image for the avatar.");
-  }
-
+const updateUserInfo = async (req, res) => {
+  const { username, email, password, gender, dailyWaterNorm } = req.body;
   const { _id } = req.user;
 
-  const currentUser = await authServices.findUser({ _id });
+  let avatarUpdate = {};
 
-  if (currentUser.avatarPublicId) {
-    await cloudinary.uploader.destroy(currentUser.avatarPublicId);
-  }
+  if (req.file) {
+    const currentUser = await authServices.findUser({ _id });
 
-  const result = await cloudinary.uploader.upload(req.file.path, {
-    folder: "avatars",
-  });
+    if (currentUser.avatarPublicId) {
+      await cloudinary.uploader.destroy(currentUser.avatarPublicId);
+    }
 
-  await fs.unlink(req.file.path);
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "avatars",
+    });
 
-  const updatedUserAvatar = await authServices.updateUser(
-    { _id },
-    {
+    await fs.unlink(req.file.path);
+
+    avatarUpdate = {
       avatarURL: result.url,
       avatarPublicId: result.public_id,
-    }
-  );
-
-  if (!updatedUserAvatar) {
-    return res.status(401).json({ message: "Not authorized" });
+    };
   }
 
-  res.json({ avatarURL: result.url });
+  const updatedUserData = {
+    ...(username && { username }),
+    ...(email && { email }),
+    ...(password && { password }),
+    ...(gender && { gender }),
+    ...(dailyWaterNorm && { dailyWaterNorm }),
+    ...avatarUpdate,
+  };
+
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    updatedUserData.password = hashedPassword;
+  }
+
+  if (email) {
+    const { email } = req.body;
+    const userUpd = await authServices.findUser({ email });
+    if (userUpd) {
+      throw HttpError(409, "Email in use");
+    }
+    updatedUserData.email = email;
+  }
+
+  const updatedUser = await authServices.updateUser({ _id }, updatedUserData);
+
+  if (!updatedUser) {
+    return res.status(400).json({ message: "User update failed" });
+  }
+
+  res.json({
+    username: updatedUserData.username,
+    email: updatedUserData.email,
+    gender: updatedUserData.gender,
+    avatarURL: avatarUpdate.avatarURL,
+    dailyWaterNorm: updatedUserData.dailyWaterNorm,
+  });
 };
 
 export default {
@@ -114,5 +150,5 @@ export default {
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
-  updateAvatar: ctrlWrapper(updateAvatar),
+  updateUserInfo: ctrlWrapper(updateUserInfo),
 };

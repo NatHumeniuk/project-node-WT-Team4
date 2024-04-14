@@ -1,7 +1,11 @@
 import express from "express";
 
 import authControllers from "../controllers/authControllers.js";
-import { userSignupSchema, userSigninSchema } from "../schemas/usersSchemas.js";
+import {
+  userSignupSchema,
+  userSigninSchema,
+  userUpdSchema,
+} from "../schemas/usersSchemas.js";
 
 import validateBody from "../decorators/validatorBody.js";
 import authenticate from "../middlewares/authenticate.js";
@@ -26,10 +30,11 @@ authRouter.get("/current", authenticate, authControllers.getCurrent);
 authRouter.post("/signout", authenticate, authControllers.signout);
 
 authRouter.patch(
-  "/avatars",
+  "/",
   authenticate,
+  validateBody(userUpdSchema),
   upload.single("avatar"),
-  authControllers.updateAvatar
+  authControllers.updateUserInfo
 );
 
 export default authRouter;
