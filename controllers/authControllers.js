@@ -22,6 +22,7 @@ const signup = async (req, res) => {
   const newUser = await authServices.signup({ ...req.body, username });
 
   res.status(201).json({
+    username: newUser.username,
     email: newUser.email,
   });
 };
@@ -31,7 +32,7 @@ const signin = async (req, res) => {
   const user = await authServices.findUser({ email });
 
   if (!user) {
-    throw HttpError(401, "Email or password is wrong");
+    throw HttpError(401, "Email is wrong");
   }
 
   const comparePassword = await authServices.validatePassword(
@@ -40,7 +41,7 @@ const signin = async (req, res) => {
   );
 
   if (!comparePassword) {
-    throw HttpError(401, "Email or password is wrong");
+    throw HttpError(401, "Password is wrong");
   }
 
   const { _id: id } = user;
@@ -61,6 +62,15 @@ const signin = async (req, res) => {
   });
 };
 
+const signout = async (req, res) => {
+  const { _id } = req.user;
+  await authServices.updateUser({ _id }, { token: "" });
+
+  res.json({
+    message: "Signout success",
+  });
+};
+
 const getCurrent = async (req, res) => {
   const { username, email, gender, avatarURL, dailyWaterNorm } = req.user;
 
@@ -70,15 +80,6 @@ const getCurrent = async (req, res) => {
     gender,
     avatarURL,
     dailyWaterNorm,
-  });
-};
-
-const signout = async (req, res) => {
-  const { _id } = req.user;
-  await authServices.updateUser({ _id }, { token: "" });
-
-  res.json({
-    message: "Signout success",
   });
 };
 

@@ -34,7 +34,7 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
       default:
-        "https://asset.cloudinary.com/ddbqgch8e/d19a0f8390fd506487e96a395cb84624",
+        "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp",
     },
     avatarPublicId: {
       type: String,
