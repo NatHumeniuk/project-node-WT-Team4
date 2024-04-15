@@ -1,0 +1,452 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Water Tracker",
+    "version": "1.0.0",
+    "description": "API for Water Tracker Project"
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json", "multipart/form-data"],
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://project-node-wt-team4.onrender.com",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "User",
+      "description": "User upd info endpoints"
+    },
+    {
+      "name": "Water",
+      "description": "Water trackers endpoints"
+    }
+  ],
+
+  "paths": {
+    "/api/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "parameters": [],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Email in use",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/api/users/signin": {
+      "post": {
+        "security": [{ "Bearer": [] }],
+        "tags": ["Auth"],
+        "summary": "Sign in existing user",
+        "parameters": [],
+        "requestBody": {
+          "description": "User's signin object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SigninRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User signin successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SigninResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/api/users/signout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User sings out",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Signout success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer auth failed",
+            "content": {}
+          },
+
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/api/users/current": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get current user info",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Logged user info returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer auth failed",
+            "content": {}
+          },
+
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/api/users/": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Upd user info",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "User's upd info object",
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdUserInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Info was successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdUserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User update failed",
+            "content": {}
+          },
+          "401": {
+            "description": "Bearer auth failed",
+            "content": {}
+          },
+          "409": {
+            "description": "Email in use",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "john.doe123@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "3959876!Qgfdgf8"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "john.doe123"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "john.doe123@example.com"
+          }
+        },
+        "example": {
+          "username": "john.doe123",
+          "email": "john.doe123@example.com"
+        }
+      },
+
+      "SigninRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "john.doe123@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "3959876!Qgfdgf8"
+          }
+        }
+      },
+      "SigninResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "User's token"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string",
+                "description": "User's name",
+                "example": "john.doe123"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "example": "john.doe123@example.com"
+              }
+            }
+          }
+        },
+        "example": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWQxNDM3ODY3OTRmMjE4YjQ1MjdkYSIsImlhdCI6MTcxMzE4NTA1MCwiZXhwIjoxNzEzMjY3ODUwfQ.9cXV9QuhscFv9DKRjbzSkJLuAYgJyGV1CRD8uOPr5Fc",
+          "user": {
+            "username": "john.doe123",
+            "email": "john.doe123@example.com"
+          }
+        }
+      },
+
+      "CurrentUserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "john.doe123"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "john.doe123@example.com"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar url",
+            "example": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp"
+          },
+          "dailyWaterNorm": {
+            "type": "number",
+            "description": "User's daily norm",
+            "example": "2000"
+          }
+        },
+        "example": {
+          "username": "john.doe123",
+          "email": "john.doe123@example.com",
+          "gender": "Man",
+          "avatarURL": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp",
+          "dailyWaterNorm": 2000
+        }
+      },
+
+      "UpdUserInfoRequest": {
+        "type": "object",
+        "properties": {
+          "avatar": {
+            "type": "string",
+            "format": "binary",
+            "description": "Upd user avatar"
+          },
+          "username": {
+            "type": "string",
+            "description": "Upd user name",
+            "example": "John"
+          },
+          "email": {
+            "type": "string",
+            "description": "Upd User's email",
+            "format": "email",
+            "example": "john123@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Upd User's password",
+            "example": "3959876!Qgfdgf8"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Upd User's gender",
+            "example": "Man"
+          },
+          "dailyWaterNorm": {
+            "type": "number",
+            "description": "Upd User's daily norm",
+            "example": "3000"
+          }
+        }
+      },
+
+      "UpdUserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "john"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "john123@example.com"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar url",
+            "example": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp"
+          },
+          "dailyWaterNorm": {
+            "type": "number",
+            "description": "User's daily norm",
+            "example": "3000"
+          }
+        },
+        "example": {
+          "username": "john",
+          "email": "john123@example.com",
+          "gender": "Man",
+          "avatarURL": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp",
+          "dailyWaterNorm": 3000
+        }
+      }
+    },
+
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
