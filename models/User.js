@@ -45,6 +45,13 @@ const userSchema = new Schema(
       min: [0, "Daily water norm cannot be negative"],
       max: [15000, "Daily water norm cannot exceed 15000ml"],
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
   },
   { versionKey: false, timestamps: true }
 );

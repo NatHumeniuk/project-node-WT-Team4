@@ -76,6 +76,104 @@
       }
     },
 
+    "/api/users/verify/{verificationToken}": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Verify user email",
+        "description": "This endpoint verifies the user's email using a token sent to their email.",
+        "parameters": [
+          {
+            "name": "verificationToken",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Verification token required to verify the user's email."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verification successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Verification successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/api/users/verify": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Resend verification email",
+        "description": "Resends the verification email to the user if they didn't receive it the first time.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address to which the verification email will be resent."
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Verification email sent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "400": {
+            "description": "Verification has already been passed"
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
     "/api/users/signin": {
       "post": {
         "security": [{ "Bearer": [] }],
@@ -109,7 +207,7 @@
             "content": {}
           },
           "401": {
-            "description": "Email or password is wrong",
+            "description": "Email or password is wrong or Email is't vefify",
             "content": {}
           },
           "500": {
