@@ -13,7 +13,7 @@ import sendEmail from "../helpers/sendEmail.js";
 const { JWT_SECRET, BASE_URL } = process.env;
 
 const signup = async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   // const verificationToken = nanoid();
 
@@ -24,10 +24,15 @@ const signup = async (req, res) => {
 
   const username = email.split("@")[0];
 
+  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "23h" });
+
   const newUser = await authServices.signup({
-    ...req.body,
+    email,
     username,
+    password,
+    token,
   });
+
   // const newUser = await authServices.signup({
   //   ...req.body,
   //   username,
@@ -43,8 +48,12 @@ const signup = async (req, res) => {
   // await sendEmail(verifyEmail);
 
   res.status(201).json({
-    username: newUser.username,
-    email: newUser.email,
+    token: newUser.token,
+    user: {
+      username: newUser.username,
+      email: newUser.email,
+      avatarURL: newUser.avatarURL,
+    },
   });
 };
 
