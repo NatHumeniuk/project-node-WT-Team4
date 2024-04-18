@@ -52,7 +52,6 @@ const signup = async (req, res) => {
     user: {
       username: newUser.username,
       email: newUser.email,
-      avatarURL: newUser.avatarURL,
     },
   });
 };
@@ -129,7 +128,6 @@ const signin = async (req, res) => {
     user: {
       username: user.username,
       email: user.email,
-      avatarURL: user.avatarURL,
     },
   });
 };
