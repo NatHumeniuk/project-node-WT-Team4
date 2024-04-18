@@ -373,11 +373,6 @@
                 "description": "User's email",
                 "format": "email",
                 "example": "john.doe123@example.com"
-              },
-              "avatarURL": {
-                "type": "string",
-                "description": "User's default avatar url",
-                "example": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp"
               }
             }
           }
@@ -386,8 +381,7 @@
           "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWQxNDM3ODY3OTRmMjE4YjQ1MjdkYSIsImlhdCI6MTcxMzE4NTA1MCwiZXhwIjoxNzEzMjY3ODUwfQ.9cXV9QuhscFv9DKRjbzSkJLuAYgJyGV1CRD8uOPr5Fc",
           "user": {
             "username": "john.doe123",
-            "email": "john.doe123@example.com",
-            "avatarURL": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp"
+            "email": "john.doe123@example.com"
           }
         }
       },
@@ -429,11 +423,6 @@
                 "description": "User's email",
                 "format": "email",
                 "example": "john.doe123@example.com"
-              },
-              "avatarURL": {
-                "type": "string",
-                "description": "User's default avatar url",
-                "example": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp"
               }
             }
           }
@@ -442,8 +431,7 @@
           "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWQxNDM3ODY3OTRmMjE4YjQ1MjdkYSIsImlhdCI6MTcxMzE4NTA1MCwiZXhwIjoxNzEzMjY3ODUwfQ.9cXV9QuhscFv9DKRjbzSkJLuAYgJyGV1CRD8uOPr5Fc",
           "user": {
             "username": "john.doe123",
-            "email": "john.doe123@example.com",
-            "avatarURL": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp"
+            "email": "john.doe123@example.com"
           }
         }
       },
