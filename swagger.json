@@ -537,8 +537,13 @@
           },
           "password": {
             "type": "string",
-            "description": "Upd User's password",
+            "description": "Old User's password",
             "example": "3959876!Qgfdgf8"
+          },
+          "passwordNew": {
+            "type": "string",
+            "description": "New User's password",
+            "example": "3959876!Qgfdg34"
           },
           "gender": {
             "type": "string",
@@ -591,7 +596,7 @@
           "dailyWaterNorm": 3000
         }
       },
-      "PortionsResponse": {
+      "PortionsRequest": {
         "type": "object",
         "properties": {
           "waterVolume": {
@@ -616,13 +621,9 @@
         "example": {
           "result": {
             "_id": "66227ca7ffc0590bb4ca6fbd",
-            "owner": "662279fe436dc3a01bec3f9d",
-            "createdAt": "2024-04-19T14:16:07.374Z",
-            "dailyWaterNorm": 2000,
             "date": "2024-04-19T14:16:07.376Z",
-            "numberOfEntries": 3,
-            "percentageOfDailyGoal": 45,
-            "updatedAt": "2024-04-19T14:16:12.485Z",
+            "numberOfEntries": 2,
+            "percentageOfDailyGoal": 30,
             "waterEntries": [
               {
                 "time": "2024-04-17T19:00:00.000Z",

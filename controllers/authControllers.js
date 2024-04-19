@@ -154,7 +154,8 @@ const getCurrent = async (req, res) => {
 };
 
 const updateUserInfo = async (req, res) => {
-  const { username, email, password, gender, dailyWaterNorm } = req.body;
+  const { username, email, password, passwordNew, gender, dailyWaterNorm } =
+    req.body;
   const { _id } = req.user;
 
   let avatarUpdate = {};
@@ -180,15 +181,22 @@ const updateUserInfo = async (req, res) => {
 
   const updatedUserData = {
     ...(username && { username }),
-    ...(email && { email }),
-    ...(password && { password }),
     ...(gender && { gender }),
     ...(dailyWaterNorm && { dailyWaterNorm }),
     ...avatarUpdate,
   };
 
-  if (password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
+  if (passwordNew) {
+    const currentUser = await authServices.findUser({ _id });
+    const comparePassword = await authServices.validatePassword(
+      password,
+      currentUser.password
+    );
+
+    if (!comparePassword) {
+      throw HttpError(401, "Old password is wrong");
+    }
+    const hashedPassword = await bcrypt.hash(passwordNew, 10);
     updatedUserData.password = hashedPassword;
   }
 
