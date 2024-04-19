@@ -330,6 +330,47 @@
           }
         }
       }
+    },
+
+    "/api/trackers/": {
+      "post": {
+        "security": [{ "Bearer": [] }],
+        "tags": ["Water"],
+        "summary": "Added portion of water today",
+        "parameters": [],
+        "requestBody": {
+          "description": "Water portion's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
     }
   },
 
@@ -548,6 +589,53 @@
           "gender": "Man",
           "avatarURL": "http://res.cloudinary.com/ddbqgch8e/image/upload/v1713198540/avatars/azjfryjytat5cpdh9ix5.webp",
           "dailyWaterNorm": 3000
+        }
+      },
+      "PortionsResponse": {
+        "type": "object",
+        "properties": {
+          "waterVolume": {
+            "type": "number",
+            "description": "Water portion in ml",
+            "example": "200"
+          },
+          "time": {
+            "type": "date",
+            "description": "time when drank water",
+            "example": "2024-04-17T19:00:00.000+00:00"
+          }
+        },
+        "example": {
+          "waterVolume": 300,
+          "time": "2024-04-17T19:00:00.000+00:00"
+        }
+      },
+      "PortionsResponse": {
+        "type": "object",
+        "properties": {},
+        "example": {
+          "result": {
+            "_id": "66227ca7ffc0590bb4ca6fbd",
+            "owner": "662279fe436dc3a01bec3f9d",
+            "createdAt": "2024-04-19T14:16:07.374Z",
+            "dailyWaterNorm": 2000,
+            "date": "2024-04-19T14:16:07.376Z",
+            "numberOfEntries": 3,
+            "percentageOfDailyGoal": 45,
+            "updatedAt": "2024-04-19T14:16:12.485Z",
+            "waterEntries": [
+              {
+                "time": "2024-04-17T19:00:00.000Z",
+                "waterVolume": 300,
+                "_id": "66227ca745c55981f26425f5"
+              },
+              {
+                "time": "2024-04-17T19:00:00.000Z",
+                "waterVolume": 300,
+                "_id": "66227cac45c55981f26425fe"
+              }
+            ]
+          }
         }
       }
     },
