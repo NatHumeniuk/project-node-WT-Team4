@@ -6,11 +6,10 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const createPortion = async (req, res) => {
   const { _id: owner } = req.user;
+  const waterData = req.body;
 
-  const result = await waterServices.addPortionWater({
-    ...req.body,
-    owner,
-  });
+  const result = await waterServices.addPortionWater(owner, waterData);
+
   res.status(200).json({ result });
 };
 

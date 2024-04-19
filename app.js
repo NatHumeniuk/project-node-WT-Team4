@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/users", authRouter);
-app.use("/api/water", waterRouter);
+app.use("/api/trackers", waterRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.use((_, res) => {
