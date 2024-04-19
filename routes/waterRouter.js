@@ -11,7 +11,6 @@ waterRouter.use(authenticate);
 
 waterRouter.post(
   "/",
-  authenticate,
   validateBody(dailyWaterPortions),
   waterControllers.createPortion
 );

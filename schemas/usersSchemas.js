@@ -18,6 +18,7 @@ export const userSigninSchema = Joi.object({
 export const userUpdSchema = Joi.object({
   username: Joi.string(),
   email: Joi.string().pattern(patternEmail),
+  gender: Joi.string().valid("Woman", "Man"),
   password: Joi.string().min(8).max(64),
   avatarURL: Joi.string(),
 });
