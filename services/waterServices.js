@@ -10,23 +10,20 @@ export const addPortionWater = async (ownerId, waterData) => {
       date: { $gte: today, $lt: new Date(today.getTime() + 86400000) },
     },
     { $push: { waterEntries: waterData } },
-    { new: true, upsert: true, setDefaultsOnInsert: true }
+    { new: true, upsert: true }
   );
 
-  if (!tracker) {
-    throw new Error("Tracker not found");
-  }
-
-  const totalWater =
-    tracker.waterEntries.reduce((sum, entry) => sum + entry.waterVolume, 0) +
-    waterData.waterVolume;
+  const totalWater = tracker.waterEntries.reduce(
+    (sum, entry) => sum + entry.waterVolume,
+    0
+  );
 
   const newPercentageOfDailyGoal = (totalWater / tracker.dailyWaterNorm) * 100;
 
   await Water.findByIdAndUpdate(tracker._id, {
     $set: {
       percentageOfDailyGoal: newPercentageOfDailyGoal,
-      numberOfEntries: tracker.waterEntries.length + 1,
+      numberOfEntries: tracker.waterEntries.length,
     },
   });
 

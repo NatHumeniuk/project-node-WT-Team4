@@ -40,7 +40,7 @@ const userSchema = new Schema(
     dailyWaterNorm: {
       type: Number,
       default: 2000,
-      min: [0, "Daily water norm cannot be negative"],
+      min: [1, "Daily water norm cannot be less than 1"],
       max: [15000, "Daily water norm cannot exceed 15000ml"],
     },
     verify: {
