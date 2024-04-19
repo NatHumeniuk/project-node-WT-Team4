@@ -317,7 +317,7 @@
             "content": {}
           },
           "401": {
-            "description": "Bearer auth failed",
+            "description": "Bearer auth failed or Old password is wrong",
             "content": {}
           },
           "409": {
