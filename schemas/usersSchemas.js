@@ -20,4 +20,5 @@ export const userUpdSchema = Joi.object({
   email: Joi.string().pattern(patternEmail),
   gender: Joi.string().valid("Woman", "Man"),
   password: Joi.string().min(8).max(64),
+  passwordNew: Joi.string().min(8).max(64),
 });
