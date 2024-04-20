@@ -10,7 +10,6 @@ const waterTrackerSchema = new Schema(
     date: {
       type: Date,
       required: true,
-      default: Date.now,
     },
     dailyWaterNorm: {
       type: Number,
@@ -27,6 +26,7 @@ const waterTrackerSchema = new Schema(
         waterVolume: {
           type: Number,
           required: true,
+
           min: [0, "Water portion cannot be negative"],
           max: [5000, "Maximum of 5000 ml per portion"],
         },
