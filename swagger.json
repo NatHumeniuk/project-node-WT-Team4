@@ -351,7 +351,7 @@
         },
         "responses": {
           "200": {
-            "description": "",
+            "description": "Time, volume and id of portion, which added",
             "content": {
               "application/json": {
                 "schema": {
@@ -361,10 +361,13 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Water portion, time, and date is required",
             "content": {}
           },
-
+          "401": {
+            "description": "Bearer auth failed or Old password is wrong",
+            "content": {}
+          },
           "500": {
             "description": "Server error",
             "content": {}
@@ -589,6 +592,7 @@
           }
         },
         "example": {
+          "description": "Only updated information is returned",
           "username": "john",
           "email": "john123@example.com",
           "gender": "Man",
@@ -599,44 +603,51 @@
       "PortionsRequest": {
         "type": "object",
         "properties": {
+          "date": {
+            "type": "string",
+            "description": "Day of water intake",
+            "example": "2024-04-20T10:21"
+          },
           "waterVolume": {
             "type": "number",
             "description": "Water portion in ml",
             "example": "200"
           },
           "time": {
-            "type": "date",
+            "type": "string",
             "description": "time when drank water",
-            "example": "2024-04-17T19:00:00.000+00:00"
+            "example": "2024-04-20T19:25"
           }
         },
         "example": {
-          "waterVolume": 300,
-          "time": "2024-04-17T19:00:00.000+00:00"
+          "date": "2024-04-20T10:21",
+          "waterVolume": 200,
+          "time": "2024-04-20T19:25"
         }
       },
       "PortionsResponse": {
         "type": "object",
-        "properties": {},
-        "example": {
-          "result": {
-            "_id": "66227ca7ffc0590bb4ca6fbd",
-            "date": "2024-04-19T14:16:07.376Z",
-            "numberOfEntries": 2,
-            "percentageOfDailyGoal": 30,
-            "waterEntries": [
-              {
-                "time": "2024-04-17T19:00:00.000Z",
-                "waterVolume": 300,
-                "_id": "66227ca745c55981f26425f5"
-              },
-              {
-                "time": "2024-04-17T19:00:00.000Z",
-                "waterVolume": 300,
-                "_id": "66227cac45c55981f26425fe"
-              }
-            ]
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "time when drank water",
+            "example": "2024-04-20T16:25:00.000Z"
+          },
+          "waterVolume": {
+            "type": "number",
+            "description": "Water portion in ml",
+            "example": "200"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Id of water portion",
+            "example": "6623a80d55d99d1d499ce6e9"
           }
+        },
+        "example": {
+          "time": "2024-04-20T16:25:00.000Z",
+          "waterVolume": 200,
+          "_id": "6623a80d55d99d1d499ce6e9"
         }
       }
     },
