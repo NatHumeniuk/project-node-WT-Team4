@@ -1,4 +1,6 @@
 import HttpError from "../helpers/HttpError.js";
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Types;
 
 import * as waterServices from "../services/waterServices.js";
 
@@ -33,7 +35,7 @@ const createPortion = async (req, res) => {
 };
 
 const updatePortion = async (req, res) => {
-  const { id } = req.params;
+  const id = ObjectId(req.params.id);
 
   const { _id: ownerId } = req.user;
 
@@ -64,13 +66,13 @@ const updatePortion = async (req, res) => {
 };
 
 const deletePortion = async (req, res) => {
-  const { id } = req.params;
+  const id = ObjectId(req.params.id);
 
   const { _id: ownerId } = req.user;
 
   const filter = {
     ownerId,
-    "waterEntries._id": id,
+    "waterEntries._id": ObjectId(id),
   };
 
   const result = await waterServices.deletePortion(filter);
