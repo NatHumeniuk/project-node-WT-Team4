@@ -18,19 +18,11 @@ export const addPortionWater = async (
     },
     {
       $push: { waterEntries: waterData },
-      $setOnInsert: { date: userDay },
-    }
+      $setOnInsert: { date: userDay, dailyWaterNorm: dailyWaterNormOwner },
+    },
+    { upsert: true, new: true }
   );
 
-  if (
-    !tracker.dailyWaterNorm ||
-    tracker.dailyWaterNorm !== dailyWaterNormOwner
-  ) {
-    await Water.updateOne(
-      { _id: tracker._id },
-      { dailyWaterNorm: dailyWaterNormOwner }
-    );
-  }
   const totalWater = tracker.waterEntries.reduce(
     (sum, entry) => sum + entry.waterVolume,
     0
