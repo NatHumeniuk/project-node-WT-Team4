@@ -51,7 +51,7 @@
         },
         "responses": {
           "201": {
-            "description": "User registered successfully.",
+            "description": "User registered successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -80,7 +80,7 @@
       "get": {
         "tags": ["Auth"],
         "summary": "Verify user email",
-        "description": "This endpoint verifies the user's email using a token sent to their email.",
+        "description": "This endpoint verifies the user's email using a token sent to their email",
         "parameters": [
           {
             "name": "verificationToken",
@@ -89,7 +89,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Verification token required to verify the user's email."
+            "description": "Verification token required to verify the user's email"
           }
         ],
         "responses": {
@@ -124,7 +124,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Resend verification email",
-        "description": "Resends the verification email to the user if they didn't receive it the first time.",
+        "description": "Resends the verification email to the user if they didn't receive it the first time",
         "requestBody": {
           "required": true,
           "content": {
@@ -135,7 +135,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to which the verification email will be resent."
+                    "description": "Email address to which the verification email will be resent"
                   }
                 },
                 "required": ["email"]
@@ -262,7 +262,7 @@
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "Logged user info returned.",
+            "description": "Logged user info returned",
             "content": {
               "application/json": {
                 "schema": {
@@ -303,7 +303,7 @@
         },
         "responses": {
           "200": {
-            "description": "Info was successfully updated.",
+            "description": "Info was successfully updated",
             "content": {
               "application/json": {
                 "schema": {
@@ -378,12 +378,12 @@
     "/api/trackers/today": {
       "get": {
         "tags": ["Water"],
-        "summary": "Get info about today water consumption.",
+        "summary": "Get info about today water consumption",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "TWater portions during today and percentage of daily goal have been returned.",
+            "description": "Water portions during today and percentage of daily goal",
             "content": {
               "application/json": {
                 "schema": {
@@ -686,21 +686,24 @@
             "type": "array",
             "description": "User's water portion during today"
           },
-          "properties": {
-            "time": {
-              "type": "string",
-              "description": "time when drank water",
-              "example": "2024-04-20T16:25:00.000Z"
-            },
-            "waterVolume": {
-              "type": "number",
-              "description": "Water portion in ml",
-              "example": "200"
-            },
-            "_id": {
-              "type": "string",
-              "description": "Id of water portion",
-              "example": "6623a80d55d99d1d499ce6e9"
+          "items": {
+            "type": "object",
+            "properties": {
+              "time": {
+                "type": "string",
+                "description": "time when drank water",
+                "example": "2024-04-20T16:25:00.000Z"
+              },
+              "waterVolume": {
+                "type": "number",
+                "description": "Water portion in ml",
+                "example": "200"
+              },
+              "_id": {
+                "type": "string",
+                "description": "Id of water portion",
+                "example": "6623a80d55d99d1d499ce6e9"
+              }
             }
           },
           "percentageOfDailyGoal": {
