@@ -3,6 +3,7 @@ import express from "express";
 import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../decorators/validatorBody.js";
 import isValidId from "../middlewares/isValidId.js";
+
 import {
   dailyWaterPortions,
   updDailyWaterPortions,
@@ -20,10 +21,16 @@ waterRouter.post(
 );
 
 waterRouter.patch(
-  "/portion",
+  "/waterEntries/:id",
   isValidId,
   validateBody(updDailyWaterPortions),
   waterControllers.updatePortion
+);
+
+waterRouter.delete(
+  "/waterEntries/:id",
+  isValidId,
+  waterControllers.deletePortion
 );
 
 waterRouter.get(
