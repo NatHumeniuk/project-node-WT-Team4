@@ -32,13 +32,11 @@ export const addPortionWater = async (
     (totalWater / tracker.dailyWaterNorm) * 100
   );
 
-  const percentageString = `${newPercentageOfDailyGoal}%`;
-
   await Water.updateOne(
     { _id: tracker._id },
     {
       $set: {
-        percentageOfDailyGoal: percentageString,
+        percentageOfDailyGoal: newPercentageOfDailyGoal,
         numberOfEntries: tracker.waterEntries.length,
       },
     }
