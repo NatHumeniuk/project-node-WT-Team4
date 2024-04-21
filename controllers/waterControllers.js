@@ -79,8 +79,27 @@ const getTodayTracker = async (req, res) => {
   res.json(result);
 };
 
+const getMonthTrackers = async (req, res) => {
+  const { year, month } = req.params;
+  const ownerId = req.user._id;
+
+  if (!year || !month) {
+    return res.status(400).json({ message: "Year and month are required." });
+  }
+
+  const monthIndex = parseInt(month, 10) - 1;
+  const stats = await waterServices.getMonthlyReport(
+    ownerId,
+    parseInt(year, 10),
+    monthIndex
+  );
+
+  res.json(stats);
+};
+
 export default {
   createPortion: ctrlWrapper(createPortion),
   updatePortion: ctrlWrapper(updatePortion),
   getTodayTracker: ctrlWrapper(getTodayTracker),
+  getMonthTrackers: ctrlWrapper(getMonthTrackers),
 };

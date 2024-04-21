@@ -32,4 +32,10 @@ waterRouter.get(
   waterControllers.getTodayTracker
 );
 
+waterRouter.get(
+  "/month/:year/:month",
+
+  waterControllers.getMonthTrackers
+);
+
 export default waterRouter;

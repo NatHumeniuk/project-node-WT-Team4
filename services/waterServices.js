@@ -59,3 +59,25 @@ export const todayTracker = (filter = {}) =>
     filter,
     "-createdAt -dailyWaterNorm -updatedAt -numberOfEntries -_id -owner -date"
   );
+
+export const getMonthlyReport = async (ownerId, year, month) => {
+  const startDate = new Date(Date.UTC(year, month, 1));
+  const endDate = new Date(Date.UTC(year, month + 1, 1));
+
+  const trackers = await Water.find({
+    owner: ownerId,
+    date: { $gte: startDate, $lt: endDate },
+  }).sort({ date: 1 });
+
+  return trackers.map((tracker) => {
+    return {
+      date: `${tracker.date.getUTCDate()}, ${tracker.date.toLocaleString(
+        "default",
+        { month: "long" }
+      )}`,
+      dailyRate: `${tracker.dailyWaterNorm / 1000} L`,
+      percentageConsumed: tracker.percentageOfDailyGoal,
+      numberOfPortions: tracker.waterEntries.length,
+    };
+  });
+};

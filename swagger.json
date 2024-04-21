@@ -403,6 +403,52 @@
           }
         }
       }
+    },
+    "/api/trackers/month/{year}/{month}": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Get monthly statistics of water consumption",
+        "parameters": [
+          {
+            "year": "Year of searching period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "month": "Month of searching period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Monthly statistics of water consumption",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyReportResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer auth failed",
+            "content": {}
+          },
+
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
     }
   },
 
@@ -736,6 +782,37 @@
             }
           ],
           "percentageOfDailyGoal": "57%"
+        }
+      },
+      "MonthlyReportResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Day of searching period",
+            "example": "1, April"
+          },
+          "dailyRate": {
+            "type": "string",
+            "description": "Daily water norm",
+            "example": "3 L"
+          },
+          "percentageConsumed": {
+            "type": "string",
+            "description": "Percentage of consumed water from the daily norm",
+            "example": "20%"
+          },
+          "numberOfPortions": {
+            "type": "number",
+            "description": "How many times were there records of water consumption",
+            "example": 3
+          }
+        },
+        "example": {
+          "date": "1, April",
+          "dailyRate": "3 L",
+          "percentageConsumed": "20%",
+          "numberOfPortions": 3
         }
       }
     },
