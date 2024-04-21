@@ -33,13 +33,11 @@ const createPortion = async (req, res) => {
 };
 
 const updatePortion = async (req, res) => {
+  const { id } = req.params;
+
   const { _id: ownerId } = req.user;
 
-  const { id, waterVolume, time } = req.body;
-
-  if (!id) {
-    return res.status(400).json({ message: "Portion ID is required" });
-  }
+  const { waterVolume, time } = req.body;
 
   const updateData = {};
 
@@ -51,13 +49,39 @@ const updatePortion = async (req, res) => {
     updateData["waterEntries.$.time"] = new Date(time);
   }
 
-  const result = await waterServices.updatePortion(ownerId, updateData);
+  const filter = {
+    ownerId,
+    "waterEntries._id": id,
+  };
+
+  const result = await waterServices.updatePortion(filter, updateData);
 
   if (!result) {
     throw HttpError(404, `Water entry not found`);
   }
 
   res.json(result);
+};
+
+const deletePortion = async (req, res) => {
+  const { id } = req.params;
+
+  const { _id: ownerId } = req.user;
+
+  const filter = {
+    ownerId,
+    "waterEntries._id": id,
+  };
+
+  const result = await waterServices.deletePortion(filter);
+
+  if (!result) {
+    throw HttpError(404, `Water entry not found`);
+  }
+
+  res.json({
+    message: "Portion of water was deleted successfully",
+  });
 };
 
 const getTodayTracker = async (req, res) => {
@@ -100,6 +124,7 @@ const getMonthTrackers = async (req, res) => {
 export default {
   createPortion: ctrlWrapper(createPortion),
   updatePortion: ctrlWrapper(updatePortion),
+  deletePortion: ctrlWrapper(deletePortion),
   getTodayTracker: ctrlWrapper(getTodayTracker),
   getMonthTrackers: ctrlWrapper(getMonthTrackers),
 };

@@ -20,7 +20,6 @@ export const dailyWaterPortions = Joi.object({
 });
 
 export const updDailyWaterPortions = Joi.object({
-  id: Joi.object(),
   waterVolume: Joi.number(),
   time: Joi.string()
     .pattern(patternDate)

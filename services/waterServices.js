@@ -45,12 +45,18 @@ export const addPortionWater = async (
   return Water.findById(tracker._id);
 };
 
-export const updatePortion = (ownerId, id, updateData) => {
-  return Water.findOneAndUpdate(
-    { _id: ownerId, "trackers.waterEntries._id": id },
-    { $set: updateData }
+export const updatePortion = async (filter, updateData) => {
+  const updatedDocument = await Water.findOneAndUpdate(
+    filter,
+    { $set: updateData },
+    {
+      new: true,
+    }
   );
+  return updatedDocument;
 };
+
+export const deletePortion = (filter) => Water.findOneAndDelete(filter);
 
 export const todayTracker = (filter = {}) =>
   Water.find(

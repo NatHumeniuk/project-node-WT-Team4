@@ -8,4 +8,5 @@ const isValidId = (req, _, next) => {
   }
   next();
 };
+
 export default isValidId;
