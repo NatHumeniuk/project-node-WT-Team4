@@ -410,7 +410,7 @@
         "summary": "Get monthly statistics of water consumption",
         "parameters": [
           {
-            "year": "Year of searching period",
+            "name": "year",
             "in": "path",
             "required": true,
             "schema": {
@@ -418,7 +418,7 @@
             }
           },
           {
-            "month": "Month of searching period",
+            "name": "month",
             "in": "path",
             "required": true,
             "schema": {
