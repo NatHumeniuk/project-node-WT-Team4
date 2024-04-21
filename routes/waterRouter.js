@@ -28,7 +28,7 @@ waterRouter.patch(
 );
 
 waterRouter.delete(
-  "/waterEntries/:id",
+  "/waterEntry/:id",
   isValidId,
   waterControllers.deletePortion
 );

@@ -427,7 +427,7 @@
         }
       }
     },
-    "/api/trackers/waterEntries/{id}": {
+    "/api/trackers/waterEntry/{id}": {
       "delete": {
         "tags": ["Water"],
         "summary": "Delete info about water portion",
