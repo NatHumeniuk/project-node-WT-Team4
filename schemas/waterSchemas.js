@@ -18,3 +18,14 @@ export const dailyWaterPortions = Joi.object({
       return time;
     }),
 });
+
+export const updDailyWaterPortions = Joi.object({
+  id: Joi.object(),
+  waterVolume: Joi.number(),
+  time: Joi.string()
+    .pattern(patternDate)
+    .custom((data) => {
+      const time = new Date(data);
+      return time;
+    }),
+});

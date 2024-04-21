@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 
+import { handleSaveError, setUpdateSettings } from "./hooks.js";
+
 const waterTrackerSchema = new Schema(
   {
     owner: {
@@ -33,7 +35,7 @@ const waterTrackerSchema = new Schema(
       },
     ],
     percentageOfDailyGoal: {
-      type: Number,
+      type: String,
     },
     numberOfEntries: {
       type: Number,
@@ -41,6 +43,12 @@ const waterTrackerSchema = new Schema(
   },
   { versionKey: false, timestamps: true }
 );
+
+waterTrackerSchema.post("save", handleSaveError);
+
+waterTrackerSchema.pre("findOneAndUpdate", setUpdateSettings);
+
+waterTrackerSchema.post("findOneAndUpdate", handleSaveError);
 
 const Water = model("tracker", waterTrackerSchema);
 

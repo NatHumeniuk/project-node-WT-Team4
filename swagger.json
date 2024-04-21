@@ -361,13 +361,42 @@
             }
           },
           "400": {
-            "description": "Water portion, time, and date is required",
+            "description": "Water portion, time, and date are required",
             "content": {}
           },
           "401": {
-            "description": "Bearer auth failed or Old password is wrong",
+            "description": "Bearer auth failed",
             "content": {}
           },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/trackers/today": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Get info about today water consumption.",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "TWater portions during today and percentage of daily goal have been returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodayWaterTrackerResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer auth failed",
+            "content": {}
+          },
+
           "500": {
             "description": "Server error",
             "content": {}
@@ -648,6 +677,62 @@
           "time": "2024-04-20T16:25:00.000Z",
           "waterVolume": 200,
           "_id": "6623a80d55d99d1d499ce6e9"
+        }
+      },
+      "TodayWaterTrackerResponse": {
+        "type": "object",
+        "properties": {
+          "waterEntries": {
+            "type": "array",
+            "description": "User's water portion during today"
+          },
+          "properties": {
+            "time": {
+              "type": "string",
+              "description": "time when drank water",
+              "example": "2024-04-20T16:25:00.000Z"
+            },
+            "waterVolume": {
+              "type": "number",
+              "description": "Water portion in ml",
+              "example": "200"
+            },
+            "_id": {
+              "type": "string",
+              "description": "Id of water portion",
+              "example": "6623a80d55d99d1d499ce6e9"
+            }
+          },
+          "percentageOfDailyGoal": {
+            "type": "string",
+            "description": "Percentage of daily goal consumption",
+            "example": "57%"
+          }
+        },
+        "example": {
+          "waterEntries": [
+            {
+              "time": "2024-04-21T00:25:00.000Z",
+              "waterVolume": 500,
+              "_id": "66239a9ec24575feb866b7b9"
+            },
+            {
+              "time": "2024-04-21T01:20:00.000Z",
+              "waterVolume": 600,
+              "_id": "66239aa7c24575feb866b7c1"
+            },
+            {
+              "time": "2024-04-21T16:25:00.000Z",
+              "waterVolume": 300,
+              "_id": "6624aab5e4ce587a7d449181"
+            },
+            {
+              "time": "2024-04-21T16:25:00.000Z",
+              "waterVolume": 300,
+              "_id": "6624aae3cf8bb134145b1b66"
+            }
+          ],
+          "percentageOfDailyGoal": "57%"
         }
       }
     },
