@@ -1,5 +1,6 @@
 import HttpError from "../helpers/HttpError.js";
-
+import Water from "../models/Water.js";
+import mongoose from "mongoose";
 import * as waterServices from "../services/waterServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -36,23 +37,30 @@ const updatePortion = async (req, res) => {
 
   const { waterVolume, time } = req.body;
 
-  const updateData = {};
+  const updatedTracker = await Water.findOneAndUpdate(
+    { owner: ownerId, "waterEntries._id": id },
+    {
+      $set: {
+        "waterEntries.$.waterVolume": waterVolume,
+        "waterEntries.$.time": new Date(time),
+      },
+    },
+    { new: true }
+  );
+  const totalWater = updatedTracker.waterEntries.reduce(
+    (sum, entry) => sum + entry.waterVolume,
+    0
+  );
 
-  if (waterVolume !== undefined) {
-    updateData["waterEntries.$.waterVolume"] = waterVolume;
+  const newPercentageOfDailyGoal = Math.round(
+    (totalWater / updatedTracker.dailyWaterNorm) * 100
+  );
+
+  if (!updatedTracker) {
+    throw HttpError(404, "Water entry not found or owner mismatch.");
   }
 
-  if (time) {
-    updateData["waterEntries.$.time"] = new Date(time);
-  }
-
-  const filter = {
-    ownerId,
-    "waterEntries._id": id,
-  };
-
-  const result = await waterServices.updatePortion(filter, updateData);
-  res.json(result);
+  res.json(updatedTracker.waterEntries);
 };
 
 const deletePortion = async (req, res) => {
