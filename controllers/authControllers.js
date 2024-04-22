@@ -15,8 +15,6 @@ const { JWT_SECRET, BASE_URL } = process.env;
 const signup = async (req, res) => {
   const { email, password } = req.body;
 
-  // const verificationToken = nanoid();
-
   const user = await authServices.findUser({ email });
   if (user) {
     throw HttpError(409, "Email in use");
@@ -24,15 +22,24 @@ const signup = async (req, res) => {
 
   const username = email.split("@")[0];
 
-  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "23h" });
-
   const newUser = await authServices.signup({
     email,
     username,
     password,
-    token,
   });
 
+  const payload = {
+    id: newUser._id,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+
+  const updUser = await authServices.updateUser(
+    { _id: newUser._id },
+    { token }
+  );
+
+  // const verificationToken = nanoid();
   // const newUser = await authServices.signup({
   //   ...req.body,
   //   username,
@@ -48,10 +55,10 @@ const signup = async (req, res) => {
   // await sendEmail(verifyEmail);
 
   res.status(201).json({
-    token: newUser.token,
+    token: updUser.token,
     user: {
-      username: newUser.username,
-      email: newUser.email,
+      username: updUser.username,
+      email: updUser.email,
     },
   });
 };
