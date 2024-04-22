@@ -22,14 +22,14 @@ waterRouter.post(
 
 waterRouter.patch(
   "/waterEntries/:id",
-
+  isValidId,
   validateBody(updDailyWaterPortions),
   waterControllers.updatePortion
 );
 
 waterRouter.delete(
   "/waterEntry/:id",
-
+  isValidId,
   waterControllers.deletePortion
 );
 
