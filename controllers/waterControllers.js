@@ -20,14 +20,19 @@ const createPortion = async (req, res) => {
     dailyWaterNorm
   );
 
-  const lastEntry = result.waterEntries[result.waterEntries.length - 1];
+  // const lastEntry = result.waterEntries[result.waterEntries.length - 1];
+
+  // const response = {
+  //   time: lastEntry.time,
+  //   waterVolume: lastEntry.waterVolume,
+  //   _id: lastEntry._id,
+  // };
 
   const response = {
-    time: lastEntry.time,
-    waterVolume: lastEntry.waterVolume,
-    _id: lastEntry._id,
+    _id: result._id,
+    waterEntries: result.waterEntries,
+    percentage: result.percentage,
   };
-
   res.json(response);
 };
 
@@ -47,36 +52,83 @@ const updatePortion = async (req, res) => {
     },
     { new: true }
   );
+
+  if (!updatedTracker) {
+    throw HttpError(404, "Water entry not found");
+  }
+
   const totalWater = updatedTracker.waterEntries.reduce(
     (sum, entry) => sum + entry.waterVolume,
     0
   );
 
-  const newPercentageOfDailyGoal = Math.round(
+  const newPercentage = Math.round(
     (totalWater / updatedTracker.dailyWaterNorm) * 100
   );
+  const newNumberOfEntries = updatedTracker.waterEntries.length;
 
-  if (!updatedTracker) {
-    throw HttpError(404, "Water entry not found or owner mismatch.");
-  }
+  const finalUpdatedTracker = await Water.findByIdAndUpdate(
+    updatedTracker._id,
+    {
+      $set: {
+        numberOfEntries: newNumberOfEntries,
+        percentage: newPercentage,
+      },
+    },
+    { new: true }
+  );
 
-  res.json(updatedTracker.waterEntries);
+  const response = {
+    _id: finalUpdatedTracker._id,
+    waterEntries: finalUpdatedTracker.waterEntries,
+    percentage: finalUpdatedTracker.percentage,
+  };
+  res.json(response);
 };
 
 const deletePortion = async (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id;
+  const ownerId = req.user._id;
 
-  const { _id: ownerId } = req.user;
-
-  const filter = {
-    ownerId,
-
+  const entryToDelete = Water.findOne({
+    owner: ownerId,
     "waterEntries._id": id,
+  });
+
+  const result = await Water.findOneAndUpdate(
+    { owner: ownerId },
+    { $pull: { waterEntries: { _id: id } } },
+    { new: true }
+  );
+
+  if (!result) {
+    throw HttpError(404, "Water entry not found");
+  }
+  const totalWater = result.waterEntries.reduce(
+    (sum, entry) => sum + entry.waterVolume,
+    0
+  );
+
+  const newPercentage = Math.round((totalWater / result.dailyWaterNorm) * 100);
+  const newNumberOfEntries = result.waterEntries.length;
+
+  const updatedTracker = await Water.findByIdAndUpdate(
+    result._id,
+    {
+      $set: {
+        numberOfEntries: newNumberOfEntries,
+        percentage: newPercentage,
+      },
+    },
+    { new: true }
+  );
+
+  const response = {
+    _id: updatedTracker._id,
+    waterEntries: updatedTracker.waterEntries,
+    percentage: updatedTracker.percentage,
   };
-
-  const result = await waterServices.deletePortion(filter);
-
-  res.json({ result, message: "Portion of water was deleted successfully" });
+  res.json(response);
 };
 
 const getTodayTracker = async (req, res) => {

@@ -36,7 +36,7 @@ export const addPortionWater = async (
     { _id: tracker._id },
     {
       $set: {
-        percentageOfDailyGoal: newPercentageOfDailyGoal,
+        percentage: newPercentageOfDailyGoal,
         numberOfEntries: tracker.waterEntries.length,
       },
     }
@@ -56,12 +56,10 @@ export const updatePortion = async (filter, updateData) => {
   return updatedDocument;
 };
 
-export const deletePortion = (filter) => Water.findOneAndDelete(filter);
-
 export const todayTracker = (filter = {}) =>
   Water.find(
     filter,
-    "-createdAt -dailyWaterNorm -updatedAt -numberOfEntries -_id -owner -date"
+    "-createdAt -dailyWaterNorm -updatedAt -numberOfEntries  -owner -date"
   );
 
 export const getMonthlyReport = async (ownerId, year, month) => {
@@ -79,9 +77,9 @@ export const getMonthlyReport = async (ownerId, year, month) => {
         "default",
         { month: "long" }
       )}`,
-      dailyRate: `${tracker.dailyWaterNorm / 1000} L`,
-      percentageConsumed: tracker.percentageOfDailyGoal,
-      numberOfPortions: tracker.waterEntries.length,
+      dailyWaterNorm: `${tracker.dailyWaterNorm / 1000} L`,
+      percentage: tracker.percentage,
+      numberOfEntries: tracker.waterEntries.length,
     };
   });
 };

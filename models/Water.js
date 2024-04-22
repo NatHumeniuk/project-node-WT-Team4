@@ -34,7 +34,7 @@ const waterTrackerSchema = new Schema(
         },
       },
     ],
-    percentageOfDailyGoal: {
+    percentage: {
       type: Number,
     },
     numberOfEntries: {
