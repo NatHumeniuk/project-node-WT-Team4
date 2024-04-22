@@ -1,6 +1,4 @@
 import HttpError from "../helpers/HttpError.js";
-import mongoose from "mongoose";
-const { ObjectId } = mongoose.Types;
 
 import * as waterServices from "../services/waterServices.js";
 
@@ -35,9 +33,8 @@ const createPortion = async (req, res) => {
 };
 
 const updatePortion = async (req, res) => {
-  const id = ObjectId(req.params.id);
-
-  const { _id: ownerId } = req.user;
+  const { id } = req.params;
+  const ownerId = req.user._id;
 
   const { waterVolume, time } = req.body;
 
@@ -57,33 +54,25 @@ const updatePortion = async (req, res) => {
   };
 
   const result = await waterServices.updatePortion(filter, updateData);
-
-  if (!result) {
-    throw HttpError(404, `Water entry not found`);
-  }
-
-  res.json(result);
+  res.status(200).json({
+    result,
+  });
 };
 
 const deletePortion = async (req, res) => {
-  const id = ObjectId(req.params.id);
+  const { id } = req.params;
 
   const { _id: ownerId } = req.user;
 
   const filter = {
     ownerId,
-    "waterEntries._id": ObjectId(id),
+
+    "waterEntries._id": id,
   };
 
   const result = await waterServices.deletePortion(filter);
 
-  if (!result) {
-    throw HttpError(404, `Water entry not found`);
-  }
-
-  res.json({
-    message: "Portion of water was deleted successfully",
-  });
+  res.json({ result, message: "Portion of water was deleted successfully" });
 };
 
 const getTodayTracker = async (req, res) => {
