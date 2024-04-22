@@ -10,9 +10,7 @@ const createPortion = async (req, res) => {
 
   const waterData = req.body;
   if (!waterData) {
-    return res
-      .status(400)
-      .json({ message: "Water portion and time is required" });
+    throw HttpError(400, "Water portion and time is required");
   }
 
   const result = await waterServices.addPortionWater(
@@ -29,7 +27,7 @@ const createPortion = async (req, res) => {
     _id: lastEntry._id,
   };
 
-  res.status(200).json(response);
+  res.json(response);
 };
 
 const updatePortion = async (req, res) => {
@@ -54,9 +52,7 @@ const updatePortion = async (req, res) => {
   };
 
   const result = await waterServices.updatePortion(filter, updateData);
-  res.status(200).json({
-    result,
-  });
+  res.json(result);
 };
 
 const deletePortion = async (req, res) => {
