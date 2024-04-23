@@ -935,6 +935,11 @@
             "description": "id of the date",
             "example": "6626bf62ffc0590bb4b6bce3"
           },
+          "dailyWaterNorm": {
+            "type": "number",
+            "description": "Daily water norm",
+            "example": "3000"
+          },
           "properties": {
             "waterEntries": {
               "type": "array",
@@ -969,6 +974,7 @@
         },
         "example": {
           "_id": "6626bf62ffc0590bb4b6bce3",
+          "dailyWaterNorm": 3000,
           "waterEntries": [
             {
               "time": "2024-04-22T07:00:00.000Z",
