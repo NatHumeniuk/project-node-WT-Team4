@@ -90,30 +90,27 @@ const deletePortion = async (req, res) => {
   const id = req.params.id;
   const ownerId = req.user._id;
 
-  const entryToDelete = Water.findOne({
-    owner: ownerId,
-    "waterEntries._id": id,
-  });
-
-  const result = await Water.findOneAndUpdate(
-    { owner: ownerId },
+  const resultDel = await Water.findOneAndUpdate(
+    { owner: ownerId, "waterEntries._id": id },
     { $pull: { waterEntries: { _id: id } } },
     { new: true }
   );
 
-  if (!result) {
+  if (!resultDel) {
     throw HttpError(404, "Water entry not found");
   }
-  const totalWater = result.waterEntries.reduce(
+  const totalWater = resultDel.waterEntries.reduce(
     (sum, entry) => sum + entry.waterVolume,
     0
   );
 
-  const newPercentage = Math.round((totalWater / result.dailyWaterNorm) * 100);
-  const newNumberOfEntries = result.waterEntries.length;
+  const newPercentage = Math.round(
+    (totalWater / resultDel.dailyWaterNorm) * 100
+  );
+  const newNumberOfEntries = resultDel.waterEntries.length;
 
-  const updatedTracker = await Water.findByIdAndUpdate(
-    result._id,
+  const updAfterDelTracker = await Water.findByIdAndUpdate(
+    resultDel._id,
     {
       $set: {
         numberOfEntries: newNumberOfEntries,
@@ -123,12 +120,12 @@ const deletePortion = async (req, res) => {
     { new: true }
   );
 
-  const response = {
-    _id: updatedTracker._id,
-    waterEntries: updatedTracker.waterEntries,
-    percentage: updatedTracker.percentage,
+  const responseDel = {
+    _id: updAfterDelTracker._id,
+    waterEntries: updAfterDelTracker.waterEntries,
+    percentage: updAfterDelTracker.percentage,
   };
-  res.json(response);
+  res.json(responseDel);
 };
 
 const getTodayTracker = async (req, res) => {
