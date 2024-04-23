@@ -57,10 +57,7 @@ export const updatePortion = async (filter, updateData) => {
 };
 
 export const todayTracker = (filter = {}) =>
-  Water.find(
-    filter,
-    "-createdAt -dailyWaterNorm -updatedAt -numberOfEntries  -owner -date"
-  );
+  Water.find(filter, "-createdAt -updatedAt -numberOfEntries  -owner -date");
 
 export const getMonthlyReport = async (ownerId, year, month) => {
   const startDate = new Date(Date.UTC(year, month, 1));
