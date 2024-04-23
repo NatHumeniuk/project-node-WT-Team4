@@ -351,7 +351,7 @@
         },
         "responses": {
           "200": {
-            "description": "Info about portions of water and percentage",
+            "description": "Info about new portion of water and daily percentage",
             "content": {
               "application/json": {
                 "schema": {
@@ -449,7 +449,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdFieldWaterPortionResponse"
+                  "$ref": "#/components/schemas/DeletedPortionResponse"
                 }
               }
             }
@@ -804,84 +804,8 @@
           },
           "properties": {
             "waterEntries": {
-              "type": "array",
-              "description": "User's water portion during today"
-            },
-            "items": {
               "type": "object",
-              "properties": {
-                "time": {
-                  "type": "string",
-                  "description": "time when drank water",
-                  "example": "2024-04-20T16:25:00.000Z"
-                },
-                "waterVolume": {
-                  "type": "number",
-                  "description": "Water portion in ml",
-                  "example": "200"
-                },
-                "_id": {
-                  "type": "string",
-                  "description": "Id of water portion",
-                  "example": "6623a80d55d99d1d499ce6e9"
-                }
-              }
-            },
-            "percentage": {
-              "type": "number",
-              "description": "Percentage of daily goal consumption",
-              "example": 57
-            }
-          }
-        },
-        "example": {
-          "_id": "6626bf62ffc0590bb4b6bce3",
-          "waterEntries": [
-            {
-              "time": "2024-04-22T07:00:00.000Z",
-              "waterVolume": 100,
-              "_id": "6626bf62861b79c54780bd7f"
-            },
-            {
-              "time": "2024-04-22T12:00:00.000Z",
-              "waterVolume": 500,
-              "_id": "6626c012861b79c54780bd8f"
-            }
-          ],
-          "percentage": 30
-        }
-      },
-      "UpdInfoWaterPortionRequest": {
-        "type": "object",
-        "properties": {
-          "waterVolume": {
-            "type": "number",
-            "description": "Correct water portion in ml",
-            "example": "200"
-          },
-          "time": {
-            "type": "string",
-            "description": "Correct time of water consumption",
-            "example": "2024-04-20T19:25"
-          }
-        },
-        "example": {
-          "waterVolume": 200,
-          "time": "2024-04-20T19:25"
-        }
-      },
-      "UpdFieldWaterPortionResponse": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "id of the date",
-            "example": "6626bf62ffc0590bb4b6bce3"
-          },
-          "properties": {
-            "waterEntries": {
-              "type": "array",
-              "description": "User's water portion during today"
+              "description": "User's new water portion"
             },
             "items": {
               "type": "object",
@@ -917,11 +841,129 @@
               "time": "2024-04-22T07:00:00.000Z",
               "waterVolume": 100,
               "_id": "6626bf62861b79c54780bd7f"
+            }
+          ],
+          "percentage": 30
+        }
+      },
+      "UpdInfoWaterPortionRequest": {
+        "type": "object",
+        "properties": {
+          "waterVolume": {
+            "type": "number",
+            "description": "Correct water portion in ml",
+            "example": "200"
+          },
+          "time": {
+            "type": "string",
+            "description": "Correct time of water consumption",
+            "example": "2024-04-20T19:25"
+          }
+        },
+        "example": {
+          "waterVolume": 200,
+          "time": "2024-04-20T19:25"
+        }
+      },
+      "UpdFieldWaterPortionResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "id of the date",
+            "example": "6626bf62ffc0590bb4b6bce3"
+          },
+          "properties": {
+            "waterEntries": {
+              "type": "object",
+              "description": "User's upd water portion"
             },
+            "items": {
+              "type": "object",
+              "properties": {
+                "time": {
+                  "type": "string",
+                  "description": "upd time of water consumption",
+                  "example": "2024-04-20T16:25:00.000Z"
+                },
+                "waterVolume": {
+                  "type": "number",
+                  "description": "upd water portion in ml",
+                  "example": "200"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Id of water portion",
+                  "example": "6623a80d55d99d1d499ce6e9"
+                }
+              }
+            },
+            "percentage": {
+              "type": "number",
+              "description": "Percentage of daily goal consumption",
+              "example": 57
+            }
+          }
+        },
+        "example": {
+          "_id": "6626bf62ffc0590bb4b6bce3",
+          "waterEntries": [
             {
-              "time": "2024-04-22T12:00:00.000Z",
-              "waterVolume": 500,
-              "_id": "6626c012861b79c54780bd8f"
+              "time": "2024-04-22T07:00:00.000Z",
+              "waterVolume": 100,
+              "_id": "6626bf62861b79c54780bd7f"
+            }
+          ],
+          "percentage": 30
+        }
+      },
+      "DeletedPortionResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "id of the date",
+            "example": "6626bf62ffc0590bb4b6bce3"
+          },
+          "properties": {
+            "waterEntries": {
+              "type": "object",
+              "description": "User's water portion which was deleted"
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "time": {
+                  "type": "string",
+                  "description": "time of deleted water consumption",
+                  "example": "2024-04-20T16:25:00.000Z"
+                },
+                "waterVolume": {
+                  "type": "number",
+                  "description": "deleted water portion in ml",
+                  "example": "200"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Id of deleted water portion",
+                  "example": "6623a80d55d99d1d499ce6e9"
+                }
+              }
+            },
+            "percentage": {
+              "type": "number",
+              "description": "Upd Percentage of daily goal consumption",
+              "example": 57
+            }
+          }
+        },
+        "example": {
+          "_id": "6626bf62ffc0590bb4b6bce3",
+          "waterEntries": [
+            {
+              "time": "2024-04-22T07:00:00.000Z",
+              "waterVolume": 100,
+              "_id": "6626bf62861b79c54780bd7f"
             }
           ],
           "percentage": 30
