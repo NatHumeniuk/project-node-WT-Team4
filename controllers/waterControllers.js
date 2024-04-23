@@ -20,17 +20,17 @@ const createPortion = async (req, res) => {
     dailyWaterNorm
   );
 
-  // const lastEntry = result.waterEntries[result.waterEntries.length - 1];
+  const lastEntry = result.waterEntries[result.waterEntries.length - 1];
 
-  // const response = {
-  //   time: lastEntry.time,
-  //   waterVolume: lastEntry.waterVolume,
-  //   _id: lastEntry._id,
-  // };
+  const responsePortion = {
+    time: lastEntry.time,
+    waterVolume: lastEntry.waterVolume,
+    _id: lastEntry._id,
+  };
 
   const response = {
     _id: result._id,
-    waterEntries: result.waterEntries,
+    waterEntries: responsePortion,
     percentage: result.percentage,
   };
   res.json(response);
@@ -78,9 +78,13 @@ const updatePortion = async (req, res) => {
     { new: true }
   );
 
+  const updatedEntry = updatedTracker.waterEntries.find(
+    (entry) => entry._id.toString() === id
+  );
+
   const response = {
     _id: finalUpdatedTracker._id,
-    waterEntries: finalUpdatedTracker.waterEntries,
+    waterEntries: updatedEntry,
     percentage: finalUpdatedTracker.percentage,
   };
   res.json(response);
@@ -89,6 +93,15 @@ const updatePortion = async (req, res) => {
 const deletePortion = async (req, res) => {
   const id = req.params.id;
   const ownerId = req.user._id;
+
+  const waterDocument = await Water.findOne({
+    owner: ownerId,
+    "waterEntries._id": id,
+  });
+
+  const entryToDelete = waterDocument.waterEntries.find(
+    (entry) => entry._id.toString() === id
+  );
 
   const resultDel = await Water.findOneAndUpdate(
     { owner: ownerId, "waterEntries._id": id },
@@ -120,12 +133,12 @@ const deletePortion = async (req, res) => {
     { new: true }
   );
 
-  const responseDel = {
+  const response = {
     _id: updAfterDelTracker._id,
-    waterEntries: updAfterDelTracker.waterEntries,
+    waterEntries: entryToDelete,
     percentage: updAfterDelTracker.percentage,
   };
-  res.json(responseDel);
+  res.json(response);
 };
 
 const getTodayTracker = async (req, res) => {
