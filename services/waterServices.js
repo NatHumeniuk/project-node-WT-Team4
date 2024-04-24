@@ -17,10 +17,20 @@ export const addPortionWater = async (
       date: { $gte: userDay, $lt: tomorrow },
     },
     {
-      $push: { waterEntries: waterData },
       $setOnInsert: { date: userDay, dailyWaterNorm: dailyWaterNormOwner },
+      $push: { waterEntries: waterData },
     },
     { upsert: true, new: true }
+  );
+
+  await Water.updateOne(
+    { _id: tracker._id },
+    {
+      $set: {
+        dailyWaterNorm: dailyWaterNormOwner,
+      },
+    },
+    { new: true }
   );
 
   const totalWater = tracker.waterEntries.reduce(
@@ -28,19 +38,16 @@ export const addPortionWater = async (
     0
   );
 
-  const newPercentageOfDailyGoal = Math.round(
-    (totalWater / tracker.dailyWaterNorm) * 100
-  );
+  const newPercentage = Math.round((totalWater / tracker.dailyWaterNorm) * 100);
 
   await Water.updateOne(
     { _id: tracker._id },
     {
       $set: {
-        percentage: newPercentageOfDailyGoal,
+        percentage: newPercentage,
         numberOfEntries: tracker.waterEntries.length,
       },
-    },
-    { upsert: true, new: true }
+    }
   );
 
   return Water.findById(tracker._id);

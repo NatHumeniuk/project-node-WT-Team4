@@ -30,7 +30,7 @@ const createPortion = async (req, res) => {
 
   const response = {
     _id: result._id,
-    waterEntries: responsePortion,
+    waterEntries: [responsePortion],
     percentage: result.percentage,
   };
   res.json(response);
@@ -49,8 +49,8 @@ const updatePortion = async (req, res) => {
       $set: {
         "waterEntries.$.waterVolume": waterVolume,
         "waterEntries.$.time": new Date(time),
+        dailyWaterNorm: updDailyWaterNorm,
       },
-      $set: { dailyWaterNorm: updDailyWaterNorm },
     },
     { new: true }
   );
@@ -95,6 +95,7 @@ const updatePortion = async (req, res) => {
 const deletePortion = async (req, res) => {
   const id = req.params.id;
   const ownerId = req.user._id;
+  const updDailyWaterNorm = req.user.dailyWaterNorm;
 
   const waterDocument = await Water.findOne({
     owner: ownerId,
@@ -108,20 +109,30 @@ const deletePortion = async (req, res) => {
   const resultDel = await Water.findOneAndUpdate(
     { owner: ownerId, "waterEntries._id": id },
     { $pull: { waterEntries: { _id: id } } },
+
     { new: true }
   );
 
   if (!resultDel) {
     throw HttpError(404, "Water entry not found");
   }
+
+  await Water.findOneAndUpdate(
+    { _id: resultDel._id },
+    {
+      $set: {
+        dailyWaterNorm: updDailyWaterNorm,
+      },
+    },
+    { new: true }
+  );
+
   const totalWater = resultDel.waterEntries.reduce(
     (sum, entry) => sum + entry.waterVolume,
     0
   );
 
-  const newPercentage = Math.round(
-    (totalWater / resultDel.dailyWaterNorm) * 100
-  );
+  const newPercentage = Math.round((totalWater / updDailyWaterNorm) * 100);
   const newNumberOfEntries = resultDel.waterEntries.length;
 
   const updAfterDelTracker = await Water.findByIdAndUpdate(

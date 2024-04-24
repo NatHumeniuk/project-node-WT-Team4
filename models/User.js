@@ -45,9 +45,11 @@ const userSchema = new Schema(
     },
     weight: {
       type: Number,
+      default: 0,
     },
     sportTime: {
-      sportTime: Number,
+      type: Number,
+      default: 0,
     },
     verify: {
       type: Boolean,
