@@ -1,10 +1,6 @@
 import Water from "../models/Water.js";
 
-export const addPortionWater = async (
-  ownerId,
-  waterData,
-  dailyWaterNormOwner
-) => {
+export const addPortionWater = async (ownerId, waterData) => {
   const userDay = new Date(waterData.date);
   userDay.setUTCHours(0, 0, 0, 0);
 
@@ -17,40 +13,12 @@ export const addPortionWater = async (
       date: { $gte: userDay, $lt: tomorrow },
     },
     {
-      $setOnInsert: { date: userDay, dailyWaterNorm: dailyWaterNormOwner },
+      $setOnInsert: { date: userDay },
       $push: { waterEntries: waterData },
     },
     { upsert: true, new: true }
   );
-
-  await Water.updateOne(
-    { _id: tracker._id },
-    {
-      $set: {
-        dailyWaterNorm: dailyWaterNormOwner,
-      },
-    },
-    { new: true }
-  );
-
-  const totalWater = tracker.waterEntries.reduce(
-    (sum, entry) => sum + entry.waterVolume,
-    0
-  );
-
-  const newPercentage = Math.round((totalWater / tracker.dailyWaterNorm) * 100);
-
-  await Water.updateOne(
-    { _id: tracker._id },
-    {
-      $set: {
-        percentage: newPercentage,
-        numberOfEntries: tracker.waterEntries.length,
-      },
-    }
-  );
-
-  return Water.findById(tracker._id);
+  return tracker;
 };
 
 export const updatePortion = async (filter, updateData) => {
