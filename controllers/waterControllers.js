@@ -7,20 +7,44 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const createPortion = async (req, res) => {
   const ownerId = req.user._id;
-  const dailyWaterNorm = req.user.dailyWaterNorm;
+  const dailyWaterNormOwn = req.user.dailyWaterNorm;
 
   const waterData = req.body;
   if (!waterData) {
     throw HttpError(400, "Water portion and time is required");
   }
 
-  const result = await waterServices.addPortionWater(
-    ownerId,
-    waterData,
-    dailyWaterNorm
+  const result = await waterServices.addPortionWater(ownerId, waterData);
+
+  const updData = await Water.findOneAndUpdate(
+    { _id: result._id },
+    {
+      $set: {
+        dailyWaterNorm: dailyWaterNormOwn,
+      },
+    },
+    { new: true }
   );
 
-  const lastEntry = result.waterEntries[result.waterEntries.length - 1];
+  const totalWater = updData.waterEntries.reduce(
+    (sum, entry) => sum + entry.waterVolume,
+    0
+  );
+
+  const newPercentage = Math.round((totalWater / updData.dailyWaterNorm) * 100);
+  const newNumberOfEntries = updData.waterEntries.length;
+
+  const finalData = await Water.findByIdAndUpdate(
+    updData._id,
+    {
+      $set: {
+        numberOfEntries: newNumberOfEntries,
+        percentage: newPercentage,
+      },
+    },
+    { new: true }
+  );
+  const lastEntry = updData.waterEntries[result.waterEntries.length - 1];
 
   const responsePortion = {
     time: lastEntry.time,
@@ -29,9 +53,9 @@ const createPortion = async (req, res) => {
   };
 
   const response = {
-    _id: result._id,
+    _id: finalData._id,
     waterEntries: [responsePortion],
-    percentage: result.percentage,
+    percentage: finalData.percentage,
   };
   res.json(response);
 };
