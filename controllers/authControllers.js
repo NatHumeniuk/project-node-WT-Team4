@@ -56,6 +56,9 @@ const signup = async (req, res) => {
     user: {
       username,
       email,
+      dailyWaterNorm: newUser.dailyWaterNorm,
+      weight: newUser.weight,
+      sportTime: newUser.sportTime,
     },
   });
 };
@@ -132,6 +135,9 @@ const signin = async (req, res) => {
     user: {
       username: user.username,
       email: user.email,
+      dailyWaterNorm: user.dailyWaterNorm,
+      weight: user.weight,
+      sportTime: user.sportTime,
     },
   });
 };
