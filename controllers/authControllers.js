@@ -10,7 +10,7 @@ import * as authServices from "../services/authServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import sendEmail from "../helpers/sendEmail.js";
 
-const { JWT_SECRET, BASE_URL } = process.env;
+const { JWT_SECRET, BASE_URL, BASE_URL_FRONT } = process.env;
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -22,37 +22,41 @@ const signup = async (req, res) => {
 
   const username = email.split("@")[0];
 
-  const newUser = await authServices.signup({
-    email,
-    username,
-    password,
-  });
-
-  const payload = {
-    id: newUser._id,
-  };
-
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-
-  await authServices.updateUser({ _id: newUser._id }, { token });
-
-  // const verificationToken = nanoid();
   // const newUser = await authServices.signup({
-  //   ...req.body,
+  //   email,
   //   username,
-  //   verificationToken,
+  //   password,
   // });
 
-  // const verifyEmail = {
-  //   to: email,
-  //   subject: "Verify email",
-  //   html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}" target="_blank">Click to verify</a>`,
+  // const payload = {
+  //   id: newUser._id,
   // };
 
-  // await sendEmail(verifyEmail);
+  // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+
+  // await authServices.updateUser({ _id: newUser._id }, { token });
+
+  const verificationToken = nanoid();
+  const newUser = await authServices.signup({
+    ...req.body,
+    username,
+    verificationToken,
+  });
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}" target="_blank">
+        <button 
+        style="border-radius: 10px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
+        >Press to continue using Water Tracker</button>
+        </a>`,
+  };
+
+  await sendEmail(verifyEmail);
 
   res.status(201).json({
-    token,
+    // token,
     user: {
       username,
       email,
@@ -63,43 +67,51 @@ const signup = async (req, res) => {
   });
 };
 
-// const verify = async (req, res) => {
-//   const { verificationToken } = req.params;
-//   const user = await authServices.findUser({ verificationToken });
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await authServices.findUser({ verificationToken });
 
-//   if (!user) {
-//     throw HttpError(404, "User not found");
-//   }
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
 
-//   await authServices.updateUser(
-//     { _id: user._id },
-//     { verify: true, verificationCode: "" }
-//   );
-//   res.json({ message: "Verification successful" });
-// };
 
-// const resendVerify = async (req, res) => {
-//   const { email } = req.body;
-//   const user = await authServices.findUser({ email });
+  const { _id: id } = user;
 
-//   if (!user) {
-//     throw HttpError(404, "User not found");
-//   }
+    const payload = { id };
 
-//   if (user.verify) {
-//     throw HttpError(400, "Verification has already been passed");
-//   }
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+    await authServices.updateUser({ _id: user._id }, { verify: true, verificationToken: null, token });
 
-//   const verifyEmail = {
-//     to: email,
-//     subject: "Verify email",
-//     html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">Click to verify</a>`,
-//   };
+    res.redirect(`${BASE_URL_FRONT}/home?token=${token}`)
+};
 
-//   await sendEmail(verifyEmail);
+const resendVerify = async (req, res) => {
+  const { email } = req.body;
+  const user = await authServices.findUser({ email });
 
-//   res.json({ message: "Verification email sent" });
-// };
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">
+        <button 
+        style="border-radius: 10px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
+        >Press to continue using Water Tracker</button>
+        </a>`,
+  };
+
+  await sendEmail(verifyEmail);
+
+  res.json({ message: "Verification email sent" });
+};
 
 const signin = async (req, res) => {
   const { email, password } = req.body;
@@ -248,12 +260,30 @@ const updateUserInfo = async (req, res) => {
   });
 };
 
+const delUser = async (req, res) => {
+  const { email } = req.body;
+    const user = await authServices.findUser({ email }); 
+    if (!user) {
+        throw HttpError(404);
+    }
+    if (!user.verify) {
+        const result = await authServices.removeUser({ email });
+    if (!result) {
+        throw HttpError(404);
+    }
+    res.json(result);
+    } else {
+      res.json({ message: "Verification has already been passed" });
+    }
+};
+
 export default {
   signup: ctrlWrapper(signup),
-  // verify: ctrlWrapper(verify),
-  // resendVerify: ctrlWrapper(resendVerify),
+  verify: ctrlWrapper(verify),
+  resendVerify: ctrlWrapper(resendVerify),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
   updateUserInfo: ctrlWrapper(updateUserInfo),
+  delUser: ctrlWrapper(delUser)
 };
