@@ -39,7 +39,8 @@ export const addPortionWater = async (
         percentage: newPercentageOfDailyGoal,
         numberOfEntries: tracker.waterEntries.length,
       },
-    }
+    },
+    { upsert: true, new: true }
   );
 
   return Water.findById(tracker._id);

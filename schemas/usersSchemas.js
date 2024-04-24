@@ -31,4 +31,6 @@ export const userUpdSchema = Joi.object({
   password: Joi.string().min(8).max(64),
   passwordNew: Joi.string().min(8).max(64),
   dailyWaterNorm: Joi.number().min(1).max(15000),
+  weight: Joi.number(),
+  sportTime: Joi.number(),
 });
