@@ -48,7 +48,7 @@ const signup = async (req, res) => {
     subject: "Verify email",
     html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}" target="_blank">
         <button 
-        style="border-radius: 10px; border: 1px solid transparent; background-color: #474746; color: #ffffff;"
+        style="border-radius: 10px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
         >Press to continue using Water Tracker</button>
         </a>`,
   };
@@ -100,7 +100,7 @@ const resendVerify = async (req, res) => {
     subject: "Verify email",
     html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">
         <button 
-        style="border-radius: 10px; border: 1px solid transparent; background-color: #474746; color: #ffffff;"
+        style="border-radius: 10px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
         >Press to continue using Water Tracker</button>
         </a>`,
   };
@@ -254,6 +254,23 @@ const updateUserInfo = async (req, res) => {
   });
 };
 
+const delUser = async (req, res) => {
+  const { email } = req.body;
+    const user = await authServices.findUser({ email }); 
+    if (!user) {
+        throw HttpError(404);
+    }
+    if (!user.verify) {
+        const result = await authServices.removeUser({ email });
+    if (!result) {
+        throw HttpError(404);
+    }
+    res.json(result);
+    } else {
+      res.json({ message: "Verification has already been passed" });
+    }
+};
+
 export default {
   signup: ctrlWrapper(signup),
   verify: ctrlWrapper(verify),
@@ -262,4 +279,5 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
   updateUserInfo: ctrlWrapper(updateUserInfo),
+  delUser: ctrlWrapper(delUser)
 };
