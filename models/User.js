@@ -43,6 +43,12 @@ const userSchema = new Schema(
       min: [1, "Daily water norm cannot be less than 1"],
       max: [15000, "Daily water norm cannot exceed 15000ml"],
     },
+    weight: {
+      type: Number,
+    },
+    sportTime: {
+      sportTime: Number,
+    },
     verify: {
       type: Boolean,
       default: false,

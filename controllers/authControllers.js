@@ -34,10 +34,7 @@ const signup = async (req, res) => {
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
 
-  const updUser = await authServices.updateUser(
-    { _id: newUser._id },
-    { token }
-  );
+  await authServices.updateUser({ _id: newUser._id }, { token });
 
   // const verificationToken = nanoid();
   // const newUser = await authServices.signup({
@@ -55,10 +52,10 @@ const signup = async (req, res) => {
   // await sendEmail(verifyEmail);
 
   res.status(201).json({
-    token: updUser.token,
+    token,
     user: {
-      username: updUser.username,
-      email: updUser.email,
+      username,
+      email,
     },
   });
 };
@@ -157,12 +154,22 @@ const getCurrent = async (req, res) => {
     gender,
     avatarURL,
     dailyWaterNorm,
+    weight,
+    sportTime,
   });
 };
 
 const updateUserInfo = async (req, res) => {
-  const { username, email, password, passwordNew, gender, dailyWaterNorm } =
-    req.body;
+  const {
+    username,
+    email,
+    password,
+    passwordNew,
+    gender,
+    dailyWaterNorm,
+    weight,
+    sportTime,
+  } = req.body;
   const { _id } = req.user;
 
   let avatarUpdate = {};
@@ -190,6 +197,8 @@ const updateUserInfo = async (req, res) => {
     ...(username && { username }),
     ...(gender && { gender }),
     ...(dailyWaterNorm && { dailyWaterNorm }),
+    ...(weight && { weight }),
+    ...(sportTime && { sportTime }),
     ...avatarUpdate,
   };
 
@@ -228,6 +237,8 @@ const updateUserInfo = async (req, res) => {
     gender: updatedUserData.gender,
     avatarURL: avatarUpdate.avatarURL,
     dailyWaterNorm: updatedUserData.dailyWaterNorm,
+    weight: updatedUserData.weight,
+    sportTime: updatedUserData.sportTime,
   });
 };
 

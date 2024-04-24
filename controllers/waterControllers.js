@@ -1,6 +1,6 @@
 import HttpError from "../helpers/HttpError.js";
 import Water from "../models/Water.js";
-import mongoose from "mongoose";
+
 import * as waterServices from "../services/waterServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -39,6 +39,7 @@ const createPortion = async (req, res) => {
 const updatePortion = async (req, res) => {
   const { id } = req.params;
   const ownerId = req.user._id;
+  const updDailyWaterNorm = req.user.dailyWaterNorm;
 
   const { waterVolume, time } = req.body;
 
@@ -49,6 +50,7 @@ const updatePortion = async (req, res) => {
         "waterEntries.$.waterVolume": waterVolume,
         "waterEntries.$.time": new Date(time),
       },
+      $set: { dailyWaterNorm: updDailyWaterNorm },
     },
     { new: true }
   );
