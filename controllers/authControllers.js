@@ -40,7 +40,7 @@ const signup = async (req, res) => {
   const newUser = await authServices.signup({
     ...req.body,
     username,
-    verificationToken,
+    verificationToken: BASE_URL,
   });
 
   const verifyEmail = {
@@ -271,7 +271,10 @@ const delUser = async (req, res) => {
     if (!result) {
         throw HttpError(404);
     }
-    res.json(result);
+      res.json(
+        result,
+        { message: "The user has been deleted" }
+      );
     } else {
       res.json({ message: "Verification has already been passed" });
     }
