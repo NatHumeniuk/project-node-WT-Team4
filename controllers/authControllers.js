@@ -48,7 +48,7 @@ const signup = async (req, res) => {
     subject: "Verify email",
     html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}" target="_blank">
         <button 
-        style="border-radius: 10px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
+        style="border-radius: 5px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
         >Press to continue using Water Tracker</button>
         </a>`,
   };
@@ -103,7 +103,7 @@ const resendVerify = async (req, res) => {
     subject: "Verify email",
     html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">
         <button 
-        style="border-radius: 10px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
+        style="border-radius: 5px; border: 1px solid transparent; background-color: #d7e3ff; color: #407bff;"
         >Press to continue using Water Tracker</button>
         </a>`,
   };
