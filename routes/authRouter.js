@@ -28,9 +28,6 @@ authRouter.post(
   authControllers.resendVerify
 );
 
-authRouter.delete("/delete", validateBody(userEmailSchema), authControllers.delUser);
-
-
 authRouter.post(
   "/signin",
   validateBody(userSigninSchema),

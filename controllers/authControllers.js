@@ -17,7 +17,14 @@ const signup = async (req, res) => {
 
   const user = await authServices.findUser({ email });
   if (user) {
+    if (!user.verify) {
+    const result = await authServices.removeUser({ email });
+    if (!result) {
+      throw HttpError(404);
+    }
+  } else {
     throw HttpError(409, "Email in use");
+  }
   }
 
   const username = email.split("@")[0];
@@ -251,23 +258,6 @@ const updateUserInfo = async (req, res) => {
   });
 };
 
-const delUser = async (req, res) => {
-  const { email } = req.body;
-  const user = await authServices.findUser({ email });
-  if (!user) {
-    throw HttpError(404);
-  }
-  if (!user.verify) {
-    const result = await authServices.removeUser({ email });
-    if (!result) {
-      throw HttpError(404);
-    }
-    res.json({ message: "The user has been deleted" });
-  } else {
-    res.json({ message: "Verification has already been passed" });
-  }
-};
-
 export default {
   signup: ctrlWrapper(signup),
   verify: ctrlWrapper(verify),
@@ -276,5 +266,4 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
   updateUserInfo: ctrlWrapper(updateUserInfo),
-  delUser: ctrlWrapper(delUser),
 };
