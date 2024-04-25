@@ -22,20 +22,6 @@ const signup = async (req, res) => {
 
   const username = email.split("@")[0];
 
-  // const newUser = await authServices.signup({
-  //   email,
-  //   username,
-  //   password,
-  // });
-
-  // const payload = {
-  //   id: newUser._id,
-  // };
-
-  // const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-
-  // await authServices.updateUser({ _id: newUser._id }, { token });
-
   const verificationToken = nanoid();
   const newUser = await authServices.signup({
     ...req.body,
@@ -56,7 +42,6 @@ const signup = async (req, res) => {
   await sendEmail(verifyEmail);
 
   res.status(201).json({
-    // token,
     user: {
       username,
       email,
@@ -83,7 +68,7 @@ const verify = async (req, res) => {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
     await authServices.updateUser({ _id: user._id }, { verify: true, verificationToken: null, token });
 
-    res.redirect(`${BASE_URL_FRONT}/home?token=${token}`)
+    res.redirect(`${BASE_URL_FRONT}?token=${token}`)
 };
 
 const resendVerify = async (req, res) => {
@@ -120,9 +105,6 @@ const signin = async (req, res) => {
   if (!user) {
     throw HttpError(401, "Email is wrong");
   }
-  // if (!user.verify) {
-  //   throw HttpError(401, "Email not verify");
-  // }
 
   const comparePassword = await authServices.validatePassword(
     password,
