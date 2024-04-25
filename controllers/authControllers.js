@@ -75,15 +75,17 @@ const verify = async (req, res) => {
     throw HttpError(404, "User not found");
   }
 
-
   const { _id: id } = user;
 
-    const payload = { id };
+  const payload = { id };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await authServices.updateUser({ _id: user._id }, { verify: true, verificationToken: null, token });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  await authServices.updateUser(
+    { _id: user._id },
+    { verify: true, verificationToken: null, token }
+  );
 
-    res.redirect(`${BASE_URL_FRONT}/home?token=${token}`)
+  res.redirect(`${BASE_URL_FRONT}/home?token=${token}`);
 };
 
 const resendVerify = async (req, res) => {
@@ -164,7 +166,15 @@ const signout = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { username, email, gender, avatarURL, dailyWaterNorm } = req.user;
+  const {
+    username,
+    email,
+    gender,
+    avatarURL,
+    dailyWaterNorm,
+    weight,
+    sportTime,
+  } = req.user;
 
   res.json({
     username,
@@ -262,19 +272,19 @@ const updateUserInfo = async (req, res) => {
 
 const delUser = async (req, res) => {
   const { email } = req.body;
-    const user = await authServices.findUser({ email }); 
-    if (!user) {
-        throw HttpError(404);
-    }
-    if (!user.verify) {
-        const result = await authServices.removeUser({ email });
+  const user = await authServices.findUser({ email });
+  if (!user) {
+    throw HttpError(404);
+  }
+  if (!user.verify) {
+    const result = await authServices.removeUser({ email });
     if (!result) {
-        throw HttpError(404);
+      throw HttpError(404);
     }
-      res.json({ message: "The user has been deleted" });
-    } else {
-      res.json({ message: "Verification has already been passed" });
-    }
+    res.json({ message: "The user has been deleted" });
+  } else {
+    res.json({ message: "Verification has already been passed" });
+  }
 };
 
 export default {
@@ -285,5 +295,5 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
   updateUserInfo: ctrlWrapper(updateUserInfo),
-  delUser: ctrlWrapper(delUser)
+  delUser: ctrlWrapper(delUser),
 };
