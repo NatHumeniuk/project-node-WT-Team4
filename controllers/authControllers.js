@@ -70,8 +70,8 @@ const verify = async (req, res) => {
     { verify: true, verificationToken: null, token }
   );
 
-    res.redirect(`${BASE_URL_FRONT}?token=${token}`)
-
+  res.redirect(`${BASE_URL_FRONT}?token=${token}`);
+};
 const resendVerify = async (req, res) => {
   const { email } = req.body;
   const user = await authServices.findUser({ email });
