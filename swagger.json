@@ -5,15 +5,13 @@
     "version": "1.0.0",
     "description": "API for Water Tracker Project"
   },
-  "consumes": ["application/json", "multipart/form-data"],
-  "produces": ["application/json", "multipart/form-data"],
   "servers": [
     {
       "url": "http://localhost:3000",
       "description": "Development server"
     },
     {
-      "url": "https://project-node-wt-team4.onrender.com",
+      "url": "https://water-tracker-backend-z2wb.onrender.com",
       "description": "Production server"
     }
   ],
@@ -836,11 +834,10 @@
             "description": "id of the date",
             "example": "6626bf62ffc0590bb4b6bce3"
           },
-          "properties": {
-            "waterEntries": {
-              "type": "array",
-              "description": "User's new water portion"
-            },
+
+          "waterEntries": {
+            "type": "array",
+            "description": "User's new water portions",
             "items": {
               "type": "object",
               "properties": {
@@ -852,7 +849,7 @@
                 "waterVolume": {
                   "type": "number",
                   "description": "Water portion in ml",
-                  "example": "200"
+                  "example": 200
                 },
                 "_id": {
                   "type": "string",
@@ -860,14 +857,16 @@
                   "example": "6623a80d55d99d1d499ce6e9"
                 }
               }
-            },
-            "percentage": {
-              "type": "number",
-              "description": "Percentage of daily goal consumption",
-              "example": 57
             }
+          },
+
+          "percentage": {
+            "type": "number",
+            "description": "Percentage of daily goal consumption",
+            "example": 57
           }
         },
+
         "example": {
           "_id": "6626bf62ffc0590bb4b6bce3",
           "waterEntries": [
@@ -907,23 +906,22 @@
             "description": "id of the date",
             "example": "6626bf62ffc0590bb4b6bce3"
           },
-          "properties": {
-            "waterEntries": {
-              "type": "array",
-              "description": "User's upd water portion"
-            },
+
+          "waterEntries": {
+            "type": "array",
+            "description": "User's updated water portion",
             "items": {
               "type": "object",
               "properties": {
                 "time": {
                   "type": "string",
-                  "description": "upd time of water consumption",
+                  "description": "updated time of water consumption",
                   "example": "2024-04-20T16:25:00.000Z"
                 },
                 "waterVolume": {
                   "type": "number",
-                  "description": "upd water portion in ml",
-                  "example": "200"
+                  "description": "updated water portion in ml",
+                  "example": 200
                 },
                 "_id": {
                   "type": "string",
@@ -931,14 +929,16 @@
                   "example": "6623a80d55d99d1d499ce6e9"
                 }
               }
-            },
-            "percentage": {
-              "type": "number",
-              "description": "Percentage of daily goal consumption",
-              "example": 57
             }
+          },
+
+          "percentage": {
+            "type": "number",
+            "description": "Percentage of daily goal consumption",
+            "example": 57
           }
         },
+
         "example": {
           "_id": "6626bf62ffc0590bb4b6bce3",
           "waterEntries": [
@@ -959,11 +959,10 @@
             "description": "id of the date",
             "example": "6626bf62ffc0590bb4b6bce3"
           },
-          "properties": {
-            "waterEntries": {
-              "type": "array",
-              "description": "User's water portion which was deleted"
-            },
+
+          "waterEntries": {
+            "type": "array",
+            "description": "User's water portion that was deleted",
             "items": {
               "type": "object",
               "properties": {
@@ -975,7 +974,7 @@
                 "waterVolume": {
                   "type": "number",
                   "description": "deleted water portion in ml",
-                  "example": "200"
+                  "example": 200
                 },
                 "_id": {
                   "type": "string",
@@ -983,14 +982,16 @@
                   "example": "6623a80d55d99d1d499ce6e9"
                 }
               }
-            },
-            "percentage": {
-              "type": "number",
-              "description": "Upd Percentage of daily goal consumption",
-              "example": 57
             }
+          },
+
+          "percentage": {
+            "type": "number",
+            "description": "Updated percentage of daily goal consumption",
+            "example": 57
           }
         },
+
         "example": {
           "_id": "6626bf62ffc0590bb4b6bce3",
           "waterEntries": [
@@ -1011,16 +1012,16 @@
             "description": "id of the date",
             "example": "6626bf62ffc0590bb4b6bce3"
           },
+
           "dailyWaterNorm": {
             "type": "number",
             "description": "Daily water norm",
-            "example": "3000"
+            "example": 3000
           },
-          "properties": {
-            "waterEntries": {
-              "type": "array",
-              "description": "User's water portion during day"
-            },
+
+          "waterEntries": {
+            "type": "array",
+            "description": "User's water portions during the day",
             "items": {
               "type": "object",
               "properties": {
@@ -1032,7 +1033,7 @@
                 "waterVolume": {
                   "type": "number",
                   "description": "Water portion in ml",
-                  "example": "200"
+                  "example": 200
                 },
                 "_id": {
                   "type": "string",
@@ -1040,14 +1041,16 @@
                   "example": "6623a80d55d99d1d499ce6e9"
                 }
               }
-            },
-            "percentage": {
-              "type": "number",
-              "description": "Percentage of daily goal consumption",
-              "example": 57
             }
+          },
+
+          "percentage": {
+            "type": "number",
+            "description": "Percentage of daily goal consumption",
+            "example": 57
           }
         },
+
         "example": {
           "_id": "6626bf62ffc0590bb4b6bce3",
           "dailyWaterNorm": 3000,

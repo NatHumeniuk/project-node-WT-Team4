@@ -1,6 +1,6 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
-import swaggerDoc from "./swagger.json" assert { type: "json" };
+import swaggerDoc from "./swagger.json" with { type: "json" };
 import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
