@@ -7,10 +7,6 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
-      "description": "Development server"
-    },
-    {
       "url": "https://water-tracker-backend-z2wb.onrender.com",
       "description": "Production server"
     }
@@ -35,6 +31,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
+        "description": "Register a new user. After registration, a verification email will be sent. User shall verify email to receive JWT token.",
         "parameters": [],
         "requestBody": {
           "description": "Registration's object",
@@ -49,7 +46,7 @@
         },
         "responses": {
           "201": {
-            "description": "User registered successfully",
+            "description": "User registered successfully. Verification email sent.",
             "content": {
               "application/json": {
                 "schema": {
@@ -78,7 +75,7 @@
       "get": {
         "tags": ["Auth"],
         "summary": "Verify user email",
-        "description": "This endpoint verifies the user's email using a token sent to their email",
+        "description": "This endpoint verifies the user's email using a token sent to their email. After successful verification, user will be redirected to the frontend with a JWT token in the URL query parameter.",
         "parameters": [
           {
             "name": "verificationToken",
@@ -87,23 +84,18 @@
             "schema": {
               "type": "string"
             },
-            "description": "Verification token required to verify the user's email"
+            "description": "Verification token sent to user's email"
           }
         ],
         "responses": {
-          "200": {
-            "description": "Verification successful",
-            "content": {
-              "application/json": {
+          "302": {
+            "description": "Redirect to frontend with token",
+            "headers": {
+              "Location": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Verification successful"
-                    }
-                  }
-                }
+                  "type": "string"
+                },
+                "description": "Redirect URL with token parameter"
               }
             }
           },
@@ -567,10 +559,6 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "token": {
-            "type": "string",
-            "description": "User's token"
-          },
           "user": {
             "type": "object",
             "properties": {
@@ -584,15 +572,32 @@
                 "description": "User's email",
                 "format": "email",
                 "example": "john.doe123@example.com"
+              },
+              "dailyWaterNorm": {
+                "type": "number",
+                "description": "User's daily water norm in ml",
+                "example": 2000
+              },
+              "weight": {
+                "type": "number",
+                "description": "User's weight in kg",
+                "example": 0
+              },
+              "sportTime": {
+                "type": "number",
+                "description": "User's sport time in hours",
+                "example": 0
               }
             }
           }
         },
         "example": {
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWQxNDM3ODY3OTRmMjE4YjQ1MjdkYSIsImlhdCI6MTcxMzE4NTA1MCwiZXhwIjoxNzEzMjY3ODUwfQ.9cXV9QuhscFv9DKRjbzSkJLuAYgJyGV1CRD8uOPr5Fc",
           "user": {
             "username": "john.doe123",
-            "email": "john.doe123@example.com"
+            "email": "john.doe123@example.com",
+            "dailyWaterNorm": 2000,
+            "weight": 0,
+            "sportTime": 0
           }
         }
       },
@@ -619,7 +624,7 @@
         "properties": {
           "token": {
             "type": "string",
-            "description": "User's token"
+            "description": "JWT authentication token"
           },
           "user": {
             "type": "object",
@@ -634,6 +639,21 @@
                 "description": "User's email",
                 "format": "email",
                 "example": "john.doe123@example.com"
+              },
+              "dailyWaterNorm": {
+                "type": "number",
+                "description": "User's daily water norm in ml",
+                "example": 2000
+              },
+              "weight": {
+                "type": "number",
+                "description": "User's weight in kg",
+                "example": 0
+              },
+              "sportTime": {
+                "type": "number",
+                "description": "User's sport time in hours",
+                "example": 0
               }
             }
           }
@@ -642,7 +662,10 @@
           "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWQxNDM3ODY3OTRmMjE4YjQ1MjdkYSIsImlhdCI6MTcxMzE4NTA1MCwiZXhwIjoxNzEzMjY3ODUwfQ.9cXV9QuhscFv9DKRjbzSkJLuAYgJyGV1CRD8uOPr5Fc",
           "user": {
             "username": "john.doe123",
-            "email": "john.doe123@example.com"
+            "email": "john.doe123@example.com",
+            "dailyWaterNorm": 2000,
+            "weight": 0,
+            "sportTime": 0
           }
         }
       },
